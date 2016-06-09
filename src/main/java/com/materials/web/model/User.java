@@ -3,9 +3,6 @@ package com.materials.web.model;
 import com.materials.web.dto.StudentDto;
 import com.materials.web.dto.UserDto;
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -18,7 +15,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "\"user\"")
-public class User implements UserDetails {
+public class User {
 
     @Id
     @GeneratedValue
@@ -51,7 +48,7 @@ public class User implements UserDetails {
     @NotNull
     private Role role;
 
-    @OneToMany(mappedBy = "userOfDocument", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Document> documentSet = new HashSet<>();
 
     @OneToMany(mappedBy = "userOfStudent")
@@ -130,41 +127,13 @@ public class User implements UserDetails {
         this.username = login;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> grantedAuthorityList = new ArrayList<>();
-        grantedAuthorityList.add(new SimpleGrantedAuthority(role.getRoleEnum().name()));
-        return grantedAuthorityList;
-    }
 
-    @Override
     public String getPassword() {
         return password;
     }
 
-    @Override
     public String getUsername() {
         return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 
     public void setPassword(String password) {

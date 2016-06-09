@@ -4,20 +4,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Администрирование - Создать аккаунта для студента</title>
-    <link href="<c:url value="/css/bootstrap.min.css"/>" rel="stylesheet">
+    <title>Аккаунт для студента</title>
+    <jsp:include page="head.jsp"/>
 </head>
 <body>
 
 <jsp:include page="footer.jsp"/>
 
 
-<div>
+<div class="container">
     <h3>${success}</h3>
-    <h2>Создать аккаунт для студента</h2>
+    <h3>Создать аккаунт для студента</h3>
     <form:form method="POST" modelAttribute="studentDto" action="add">
         <table>
             <tr>
@@ -64,7 +61,7 @@
                 <td><label for="specialty">Специальность</label></td>
                 <td>
                     <select name="specialtyId" id="specialty">
-                        <c:forEach var="item" items="${specialtyList}">
+                        <c:forEach var="item" items="${specialtySet}">
                             <option value="${item.id}">${item.name}</option>
                         </c:forEach>
                     </select>

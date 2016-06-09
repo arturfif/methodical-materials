@@ -49,14 +49,14 @@
                     <td>${document.libraryKey}</td>
                     <td>${document.name}</td>
                     <td>
-                        <c:forEach items="${document.authorList}" var="author">
+                        <c:forEach items="${document.authorSet}" var="author">
                             ${document.surname} &nbsp;
                         </c:forEach>
                     </td>
                     <td>${document.publishingYear}</td>
                     <td>${document.department}</td>
                     <td><a href="https://drive.google.com/open?id=${document.objectKey}">Скачать</a></td>
-                    
+
                 </tr>
             </c:forEach>
         </tbody>

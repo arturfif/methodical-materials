@@ -2,7 +2,6 @@ package com.materials.web.dao.impl;
 
 import com.materials.web.dao.inter.AuthorDAO;
 import com.materials.web.model.Author;
-import com.materials.web.model.Document;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -69,5 +68,14 @@ public class AuthorDAOImpl implements AuthorDAO {
         return currentSession().createCriteria(Author.class).list();
     }
 
+    @Override
+    @Transactional
+    public Author get(Author author) {
+        Criteria criteria = currentSession().createCriteria(Author.class);
+        criteria.add(Restrictions.eq("surname", author.getSurname()));
+        criteria.add(Restrictions.eq("name", author.getName()));
+        criteria.add(Restrictions.eq("patronymic", author.getPatronymic()));
 
+        return (Author) criteria.uniqueResult();
+    }
 }

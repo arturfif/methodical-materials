@@ -34,7 +34,7 @@
     </sec:authorize>
 
     <sec:authorize access="isAuthenticated()">
-        <div class="alert alert-info">Вы уже авторизированы. Ваш логин: ${pageContext.request.userPrincipal.name}</div>
+        <div class="alert alert-info">Вы авторизированы. Ваш логин: ${pageContext.request.userPrincipal.name}</div>
     </sec:authorize>
 
 </div>

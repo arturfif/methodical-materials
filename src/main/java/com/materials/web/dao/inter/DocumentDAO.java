@@ -15,4 +15,8 @@ public interface DocumentDAO {
     List<Document> list();
 
     List<Document> listChecked();
+
+    List<Document> listByUserId(long id);
+
+    List<Document> listUnchecked();
 }

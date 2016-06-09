@@ -1,7 +1,6 @@
 package com.materials.web.dao.inter;
 
 import com.materials.web.model.Author;
-import com.materials.web.model.Document;
 
 import java.util.List;
 
@@ -14,7 +13,9 @@ public interface AuthorDAO {
     Author getByName(String name);
     Author getBySurname(String surname);
     Author getByPatronymic(String patronymic);
+    Author get(Author author);
     void save(Author author);
+
     List<Author> list();
 
 }

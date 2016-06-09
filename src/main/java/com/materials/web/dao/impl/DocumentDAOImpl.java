@@ -6,6 +6,7 @@ import com.materials.web.model.enumeration.Status;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -53,6 +54,8 @@ public class DocumentDAOImpl implements DocumentDAO {
     @Transactional
     @SuppressWarnings("unchecked")
     public List<Document> list() {
+        Criteria criteria = currentSession().createCriteria(Document.class);
+        criteria.setProjection(Projections.distinct(Projections.property("id")));
         return currentSession().createCriteria(Document.class).list();
     }
 
@@ -61,6 +64,25 @@ public class DocumentDAOImpl implements DocumentDAO {
     @SuppressWarnings("unchecked")
     public List<Document> listChecked() {
         Criteria criteria = currentSession().createCriteria(Document.class);
-        return criteria.add(Restrictions.eq("status", Status.CHECKED.name())).list();
+        criteria.setProjection(Projections.distinct(Projections.property("id")));
+        return criteria.add(Restrictions.eq("status", Status.CHECKED)).list();
+    }
+
+    @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<Document> listByUserId(long id) {
+        Criteria criteria = currentSession().createCriteria(Document.class);
+        return criteria.add(Restrictions.eq("user_id", id)).list();
+    }
+
+    @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<Document> listUnchecked() {
+        Criteria criteria = currentSession().createCriteria(Document.class);
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        List<Document> status = criteria.add(Restrictions.eq("status", Status.UNCHECKED)).list();
+        return status;
     }
 }

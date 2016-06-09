@@ -32,9 +32,11 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Документы
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">Мои документы</a></li>
-                        <li><a href="#">Загрузить документ</a></li>
-                        <li><a href="#">Проверить документы</a></li>
+                        <li><a href="<c:url value="/document/my"/>">Мои документы</a></li>
+                        <li><a href="<c:url value="/document/add"/>">Добавить документ</a></li>
+                        <sec:authorize access="hasRole('ADMIN')">
+                        <li><a href="<c:url value="/document/check"/>">Проверить документы</a></li>
+                        </sec:authorize>
                     </ul>
                 </li>
                 </sec:authorize>
@@ -43,8 +45,8 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Создать аккаунт
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">Для администратора</a></li>
-                        <li><a href="#">Для студента</a></li>
+                        <li><a href="<c:url value="/admin/account/admin/add"/>">Для администратора</a></li>
+                        <li><a href="<c:url value="/admin/account/student/add"/>">Для студента</a></li>
                     </ul>
                 </li>
                 </sec:authorize>

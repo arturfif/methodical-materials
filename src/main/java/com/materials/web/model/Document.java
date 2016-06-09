@@ -5,7 +5,6 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +23,7 @@ public class Document {
     private Long id;
 
     @Column(name = "library_key")
-    private String libraryKey;
+    private Integer libraryKey;
 
     @Column(name = "name")
     @NotBlank
@@ -51,9 +50,9 @@ public class Document {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User userOfDocument;
+    private User user;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "document_author", joinColumns = {
             @JoinColumn(name = "document_id", nullable = false)},
             inverseJoinColumns = {
@@ -72,6 +71,7 @@ public class Document {
     public Document() {
     }
 
+
     public Long getId() {
         return id;
     }
@@ -80,11 +80,11 @@ public class Document {
         this.id = id;
     }
 
-    public String getLibraryKey() {
+    public Integer getLibraryKey() {
         return libraryKey;
     }
 
-    public void setLibraryKey(String libraryKey) {
+    public void setLibraryKey(Integer libraryKey) {
         this.libraryKey = libraryKey;
     }
 
@@ -128,14 +128,6 @@ public class Document {
         this.uploadDate = uploadDate;
     }
 
-    public User getPerson() {
-        return userOfDocument;
-    }
-
-    public void setPerson(User user) {
-        this.userOfDocument = user;
-    }
-
     public Set<Author> getAuthorSet() {
         return authorSet;
     }
@@ -152,12 +144,12 @@ public class Document {
         this.objectKey = objectKey;
     }
 
-    public User getUserOfDocument() {
-        return userOfDocument;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserOfDocument(User userOfDocument) {
-        this.userOfDocument = userOfDocument;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Set<Specialty> getSpecialtySet() {

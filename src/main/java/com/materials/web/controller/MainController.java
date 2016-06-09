@@ -13,14 +13,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class MainController {
 
-	@RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
-	public ModelAndView defaultPage() {
-
-		ModelAndView model = new ModelAndView();
-		model.addObject("title", "Система \"Методические материалы\"");
-		model.addObject("message", "Главная страница");
-		model.setViewName("hello");
-		return model;
+	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
+	public String defaultPage() {
+		return "index";
 
 	}
 
