@@ -49,10 +49,11 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OrderBy("uploadDate DESC")
     private Set<Document> documentSet = new HashSet<>();
 
-    @OneToMany(mappedBy = "userOfStudent")
-    private Set<Student> studentSet = new HashSet<>();
+    @OneToOne(mappedBy = "user")
+    private Student student;
 
     public Role getRole() {
         return role;
@@ -62,12 +63,12 @@ public class User {
         this.role = role;
     }
 
-    public Set<Student> getStudentSet() {
-        return studentSet;
+    public Student getStudent() {
+        return student;
     }
 
-    public void setStudentSet(Set<Student> studentSet) {
-        this.studentSet = studentSet;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     public User() {

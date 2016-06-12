@@ -1,11 +1,13 @@
 package com.materials.web.model;
 
+import com.materials.web.model.enumeration.Status;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "author")
@@ -26,7 +28,7 @@ public class Author implements Serializable {
     @Column(name = "patronymic")
     private String patronymic;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authorSet")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "authorSet")
     private Set<Document> documentSet = new HashSet<>();
 
     public Author() {
@@ -70,5 +72,9 @@ public class Author implements Serializable {
 
     public void setDocumentSet(Set<Document> documentSet) {
         this.documentSet = documentSet;
+    }
+
+    public Set<Document> getCheckedDocumentSet() {
+        return documentSet.stream().filter(document -> document.getStatus() == Status.CHECKED).collect(Collectors.toSet());
     }
 }

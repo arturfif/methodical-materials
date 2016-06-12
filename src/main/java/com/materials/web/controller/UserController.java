@@ -42,7 +42,7 @@ public class UserController {
     @RequestMapping(value = "account/admin/add", method = RequestMethod.GET)
     public String addAdmin(Model model) {
         model.addAttribute("userDto", new UserDto());
-        return "add-admin";
+        return "admin/add-admin";
     }
 
     @RequestMapping(value = "account/admin/add", method = RequestMethod.POST)
@@ -61,7 +61,7 @@ public class UserController {
             fail = true;
         }
         if(fail) {
-            return "add-admin";
+            return "admin/add-admin";
         }
 
         Role role = roleDAO.get(userDto.getRoleId());
@@ -70,7 +70,7 @@ public class UserController {
 
         userDAO.save(user);
         model.addAttribute("success", "Пользователь " + userDto.getUsername() + " успешно зарегистрирован!");
-        return "add-admin";
+        return "admin/add-admin";
     }
 
     @RequestMapping(value = "account/student/add", method = RequestMethod.GET)
@@ -81,7 +81,7 @@ public class UserController {
         model.addAttribute("specialtyList", specialtyList);
 
         model.addAttribute("studentDto", new StudentDto());
-        return "add-student";
+        return "admin/add-student";
     }
 
     @RequestMapping(value = "account/student/add", method = RequestMethod.POST)
@@ -101,7 +101,7 @@ public class UserController {
             fail = true;
         }
         if(fail) {
-            return "add-student";
+            return "admin/add-student";
         }
 
         Role role = roleDAO.get(3);
@@ -110,12 +110,12 @@ public class UserController {
         userDAO.save(user);
         Student student = new Student();
         student.setStudentSpecialty(specialtyDAO.get(studentDto.getSpecialtyId()));
-        student.setUserOfStudent(user);
+        student.setUser(user);
         studentDAO.save(student);
 
         model.addAttribute("success", "Пользователь " + studentDto.getUsername() + " успешно зарегистрирован!");
         model.addAttribute("specialtyList", specialtyList);
-        return "add-student";
+        return "admin/add-student";
     }
 
 }

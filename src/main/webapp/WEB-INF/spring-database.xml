@@ -27,8 +27,10 @@
 		<property name="hibernateProperties">
 			<props>
 				<prop key="dialect">org.hibernate.dialect.PostgreSQL9Dialect</prop>
+                <prop key="hibernate.classloading.use_current_tccl_as_parent">false</prop>
 			</props>
 		</property>
+
 	</bean>
 
     <bean id="transactionManager"

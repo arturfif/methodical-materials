@@ -17,7 +17,7 @@ public class DocumentDto {
     @Pattern(regexp = "^[0-9]{0,6}$")
     private String libraryKey;
 
-    @Pattern(regexp = "^[A-Za-zа-яА-Я- ]{1,255}$")
+    @Pattern(regexp = "^.{1,255}$")
     private String name;
 
     @NotNull

@@ -4,6 +4,8 @@ import com.materials.web.dao.inter.*;
 import com.materials.web.dto.DocumentDto;
 import com.materials.web.model.*;
 import com.materials.web.model.enumeration.Status;
+import com.materials.web.util.MultipartFileUtil;
+import com.materials.web.util.google.GoogleDriveUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,14 +13,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "document/")
@@ -58,14 +63,19 @@ public class DocumentController {
         model.addAttribute("facultyList", facultyList);
         model.addAttribute("specialtyList", specialtyList);
         model.addAttribute("departmentList", departmentList);
-        return "add-file";
+        return "admin/add-file";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public String saveFile(@Valid @ModelAttribute("documentDto") DocumentDto documentDto,
                            BindingResult bindingResult, Model model,
+                           RedirectAttributes redirectAttributes,
                            HttpServletRequest request) {
 
+        boolean fail = false;
+        if (bindingResult.hasErrors()) {
+            fail = true;
+        }
         if(request.isUserInRole("ADMIN")) {
             documentDto.setStatus(Status.CHECKED.name());
         } else {
@@ -75,10 +85,16 @@ public class DocumentController {
         String username = request.getUserPrincipal().getName();
         documentDto.setUser(userDAO.get(username));
 
-        MultipartFile documentDtoFile = documentDto.getFile();
-        //load file get object key
+        try {
+            File file = MultipartFileUtil.multipartToFile(documentDto.getFile(), documentDto.getName());
 
-        documentDto.setObjectKey("@#J(*hd389ch23");
+            String objectKey = GoogleDriveUtil.uploadFile(file);
+            documentDto.setObjectKey(objectKey);
+        }
+        catch (Exception e) {
+            model.addAttribute("error", "Не удалось загрузить файл!");
+            return "admin/add-file";
+        }
 
         Document document = documentDto.buildDocument();
         document.setSpecialtySet(toSpecialtySet(documentDto.getSpecialtySet()));
@@ -86,19 +102,13 @@ public class DocumentController {
         document.setDepartment(toDepartment(documentDto.getDepartmentId()));
         documentDAO.save(document);
 
-        // TODO
-
-        boolean fail = false;
-        if (bindingResult.hasErrors()) {
-            fail = true;
-        }
         if(fail) {
             model.addAttribute("error", "При загрузке файла произошла ошибка!");
-            return "add-file";
+            return "admin/add-file";
         }
-        model.asMap().clear();
-        model.addAttribute("success", "Документ успешно добавлен в систему!");
-        return "add-file";
+
+        redirectAttributes.addFlashAttribute("success", "Документ успешно добавлен в систему!");
+        return "redirect:add";
     }
 
     @RequestMapping(value = "my", method = RequestMethod.GET)
@@ -107,23 +117,44 @@ public class DocumentController {
         List<Document> documentList = new ArrayList<>();
         documentList.addAll(userDAO.get(username).getDocumentSet());
         model.addAttribute("documentList", documentList);
-        return "my-document";
+        return "admin/my-document";
     }
 
     @RequestMapping(value = "check", method = RequestMethod.GET)
     public String checkDocuments(Model model) {
         model.addAttribute("documentList", documentDAO.listUnchecked());
-        return "check-document";
+        return "admin/check-document";
     }
 
+    @RequestMapping(value = "accept", method = RequestMethod.POST)
+    public String acceptDocument(Model model,
+                                @RequestParam(value = "acceptId") long acceptId) {
+        try {
+            documentDAO.setCheckedStatus(acceptId);
+        } catch (Exception e) {
+            model.addAttribute("error", "Не удалось принять документ!");
+        }
+        model.addAttribute("success", "Документ успешно принят и доступен для поиска!");
+        return "admin/check-document";
+    }
 
+    @RequestMapping(value = "deny", method = RequestMethod.POST)
+    public String denyDocument(Model model,
+                                @RequestParam(value = "denyId") long denyId) {
+        try {
+            GoogleDriveUtil.deleteFile(documentDAO.get(denyId).getObjectKey());
+            documentDAO.remove(denyId);
+        } catch (Exception e) {
+            model.addAttribute("error", "Не удалось отклонить документ!");
+            return "admin/check-document";
+        }
+        model.addAttribute("success", "Документ успешно отклонен!");
+
+        return "admin/check-document";
+    }
 
     private Set<Specialty> toSpecialtySet(Set<Long> longSet) {
-        Set<Specialty> specialtySet = new HashSet<>();
-        for (Long aLong : longSet) {
-            specialtySet.add(specialtyDAO.get(aLong));
-        }
-        return specialtySet;
+        return longSet.stream().map(aLong -> specialtyDAO.get(aLong)).collect(Collectors.toSet());
     }
 
     private Department toDepartment(Long id) {
@@ -167,5 +198,7 @@ public class DocumentController {
         }
         return author;
     }
+
+
 
 }

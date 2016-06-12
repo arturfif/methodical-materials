@@ -15,9 +15,9 @@ public class Student {
     @JoinColumn(name = "specialty_id")
     private Specialty studentSpecialty;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private User userOfStudent;
+    private User user;
 
     public Long getId() {
         return id;
@@ -35,12 +35,12 @@ public class Student {
         this.studentSpecialty = studentSpecialty;
     }
 
-    public User getUserOfStudent() {
-        return userOfStudent;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserOfStudent(User userOfStudent) {
-        this.userOfStudent = userOfStudent;
+    public void setUser(User userOfStudent) {
+        this.user = userOfStudent;
     }
 
     public Student() {

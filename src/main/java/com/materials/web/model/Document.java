@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +15,7 @@ import java.util.Set;
  */
 
 @Entity
+@XmlRootElement
 @Table(name = "document")
 public class Document {
 
@@ -58,6 +60,7 @@ public class Document {
             inverseJoinColumns = {
                     @JoinColumn(name = "author_id",
                             nullable = false)})
+    @OrderBy("surname")
     private Set<Author> authorSet = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

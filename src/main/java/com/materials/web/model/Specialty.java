@@ -22,11 +22,20 @@ public class Specialty {
     @OneToMany(mappedBy = "studentSpecialty")
     private Set<Student> studentSet = new HashSet<>();
 
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
+
     @ManyToOne
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "specialtySet")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "specialtySet")
+    @OrderBy("uploadDate DESC")
     private Set<Document> documentSet = new HashSet<>();
 
     public Specialty() {

@@ -15,21 +15,11 @@ public class MainController {
 
 	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
 	public String defaultPage() {
-		return "index";
+		return "public/index";
 
 	}
 
-	@RequestMapping(value = "/admin**", method = RequestMethod.GET)
-	public ModelAndView adminPage() {
 
-		ModelAndView model = new ModelAndView();
-		model.addObject("title", "Система \"Методические материалы\"");
-		model.addObject("message", "Страница для администраторов");
-		model.setViewName("admin");
-
-		return model;
-
-	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public ModelAndView login(@RequestParam(value = "error", required = false) String error,
@@ -43,7 +33,7 @@ public class MainController {
 		if (logout != null) {
 			model.addObject("msg", "Вы успешно вышли из системы.");
 		}
-		model.setViewName("login");
+		model.setViewName("public/login");
 
 		return model;
 
@@ -65,7 +55,7 @@ public class MainController {
 			
 		}
 		
-		model.setViewName("403");
+		model.setViewName("public/service/403");
 		return model;
 
 	}

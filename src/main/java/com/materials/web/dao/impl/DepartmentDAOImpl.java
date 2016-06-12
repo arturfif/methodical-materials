@@ -5,6 +5,7 @@ import com.materials.web.model.Department;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -50,6 +51,8 @@ public class DepartmentDAOImpl implements DepartmentDAO {
     @Transactional
     @SuppressWarnings("unchecked")
     public List<Department> list() {
+        Criteria criteria = currentSession().createCriteria(Department.class);
+        criteria.addOrder(Order.asc("name"));
         return currentSession().createCriteria(Department.class).list();
     }
 }
