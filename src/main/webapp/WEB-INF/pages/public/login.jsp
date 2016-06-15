@@ -9,7 +9,7 @@
     <link href="<c:url value="/css/signin.css"/>" rel="stylesheet">
 </head>
 <body>
-<jsp:include page="service/footer.jsp"/>
+<jsp:include page="service/header.jsp"/>
 
 <div class="container">
     <sec:authorize access="isAnonymous()">
@@ -17,9 +17,9 @@
           action="<c:url value='/j_spring_security_check' />" method='POST'>
         <h2 class="form-signin-heading">Вход в учетную запись</h2>
         <label for="inputLogin" class="sr-only">Логин</label>
-        <input type='text' name='username' id="inputLogin" class="form-control" placeholder="Логин" required autofocus>
+        <input type='text' name='username' id="inputLogin" class="form-control" placeholder="Логин" required title="Введите логин" autofocus>
         <label for="inputPassword" class="sr-only">Пароль</label>
-        <input type="password" name='password' id="inputPassword" class="form-control" placeholder="Пароль" required>
+        <input type="password" name='password' id="inputPassword" class="form-control" placeholder="Пароль" required title="Введите пароль">
         <input name="submit" type="submit" value="Войти" class="btn btn-lg btn-primary btn-block"/>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <a href="<c:url value="/"/>"><span class="glyphicon glyphicon-arrow-left"></span> На главную</a>

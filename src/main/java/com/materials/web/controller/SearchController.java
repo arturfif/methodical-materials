@@ -37,12 +37,13 @@ public class SearchController {
                              HttpServletRequest request) {
 
         model.addAttribute("searchTitle", "Результаты поиска:");
-        if (searchQuery == null || searchQuery.equals("")) {
+        if (searchQuery == null || searchQuery.trim().equals("")) {
             String username = request.getUserPrincipal().getName();
             User user = userDAO.get(username);
             if (user.getRole().getRoleEnum() == RoleEnum.STUDENT) {
                 Long specialtyId = user.getStudent().getStudentSpecialty().getId();
-                List<Document> documentList = new ArrayList<>(specialtyDAO.get(specialtyId).getDocumentSet());
+                Set<Document> documentSet = specialtyDAO.get(specialtyId).getDocumentSet();
+                List<Document> documentList = new ArrayList<>(documentSet);
                 model.addAttribute("documentList", documentList);
                 model.addAttribute("searchTitle", "Результаты поиска по Вашей специальности:");
                 return "public/search";
@@ -50,8 +51,10 @@ public class SearchController {
 
             return "public/view-search";
         } else {
-
+            searchQuery = searchQuery.trim();
             List<Document> documentList = search(searchQuery);
+            model.addAttribute("searchQuery", searchQuery);
+
             model.addAttribute("documentList", documentList);
             return "public/search";
         }
@@ -62,7 +65,6 @@ public class SearchController {
         stringList.addAll(Arrays.asList(searchQuery.split(" ")));
 
         List<Document> resultList = new ArrayList<>();
-        Set<Document> documentSet = new HashSet<>();
 
         for (String keyWord : stringList) {
             if (org.apache.commons.lang.math.NumberUtils.isNumber(keyWord)) {
@@ -76,23 +78,22 @@ public class SearchController {
             resultList.addAll(documentDAO.listByDepartment(keyWord));
         }
         resultList = priorityList(resultList);
-        documentSet.addAll(resultList);
-        resultList.clear();
-        resultList.addAll(documentSet);
         return resultList;
     }
 
     private List<Document> priorityList(List<Document> documentList) {
-        //// TODO: 10.06.2016 optimize priority
+
         Map<Document, Integer> frequencyMap = new HashMap<>();
         for (Document document : documentList) {
             int frequency = Collections.frequency(documentList, document);
-            frequencyMap.put(document, frequency);
+            if(!(Collections.frequency(frequencyMap.keySet(), document) > 0)) {
+                frequencyMap.put(document, frequency);
+            }
         }
-        frequencyMap = MapUtil.sortByValue(frequencyMap);
-        List<Document> resultList = new ArrayList<>(frequencyMap.keySet());
-        return resultList;
+
+        return MapUtil.entriesSortedByValues(frequencyMap);
 
     }
+
 
 }

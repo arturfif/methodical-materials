@@ -5,6 +5,7 @@ import com.materials.web.model.Specialty;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ public class SpecialtyDAOImpl implements SpecialtyDAO {
     @SuppressWarnings("unchecked")
     public List<Specialty> list() {
         Criteria criteria = currentSession().createCriteria(Specialty.class);
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         criteria.addOrder(Order.asc("name"));
         return criteria.list();
     }

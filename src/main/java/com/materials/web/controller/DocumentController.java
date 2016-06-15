@@ -5,6 +5,7 @@ import com.materials.web.dto.DocumentDto;
 import com.materials.web.model.*;
 import com.materials.web.model.enumeration.Status;
 import com.materials.web.util.MultipartFileUtil;
+import com.materials.web.util.XMLMaker;
 import com.materials.web.util.google.GoogleDriveUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +19,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.xml.bind.JAXBException;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,10 +33,7 @@ import java.util.stream.Collectors;
 public class DocumentController {
 
     private UserDAO userDAO;
-    private RoleDAO roleDAO;
     private SpecialtyDAO specialtyDAO;
-    private FacultyDAO facultyDAO;
-    private StudentDAO studentDAO;
     private DepartmentDAO departmentDAO;
     private DocumentDAO documentDAO;
     private AuthorDAO authorDAO;
@@ -42,13 +42,10 @@ public class DocumentController {
     private List<Department> departmentList;
 
     @Autowired
-    public DocumentController(UserDAO userDAO, RoleDAO roleDAO, SpecialtyDAO specialtyDAO, FacultyDAO facultyDAO,
-                          StudentDAO studentDAO, DepartmentDAO departmentDAO, DocumentDAO documentDAO, AuthorDAO authorDAO) {
+    public DocumentController(UserDAO userDAO, SpecialtyDAO specialtyDAO, FacultyDAO facultyDAO,
+                              DepartmentDAO departmentDAO, DocumentDAO documentDAO, AuthorDAO authorDAO) {
         this.userDAO = userDAO;
-        this.roleDAO = roleDAO;
         this.specialtyDAO = specialtyDAO;
-        this.facultyDAO = facultyDAO;
-        this.studentDAO = studentDAO;
         this.departmentDAO = departmentDAO;
         this.documentDAO = documentDAO;
         this.authorDAO = authorDAO;
@@ -72,6 +69,7 @@ public class DocumentController {
                            RedirectAttributes redirectAttributes,
                            HttpServletRequest request) {
 
+
         boolean fail = false;
         if (bindingResult.hasErrors()) {
             fail = true;
@@ -86,21 +84,15 @@ public class DocumentController {
         documentDto.setUser(userDAO.get(username));
 
         try {
-            File file = MultipartFileUtil.multipartToFile(documentDto.getFile(), documentDto.getName());
-
-            String objectKey = GoogleDriveUtil.uploadFile(file);
-            documentDto.setObjectKey(objectKey);
+            saveDocumentAndUploadFile(documentDto);
         }
         catch (Exception e) {
+
             model.addAttribute("error", "Не удалось загрузить файл!");
             return "admin/add-file";
         }
 
-        Document document = documentDto.buildDocument();
-        document.setSpecialtySet(toSpecialtySet(documentDto.getSpecialtySet()));
-        document.setAuthorSet(toAuthorSet(documentDto.getAuthorSet()));
-        document.setDepartment(toDepartment(documentDto.getDepartmentId()));
-        documentDAO.save(document);
+
 
         if(fail) {
             model.addAttribute("error", "При загрузке файла произошла ошибка!");
@@ -109,6 +101,26 @@ public class DocumentController {
 
         redirectAttributes.addFlashAttribute("success", "Документ успешно добавлен в систему!");
         return "redirect:add";
+    }
+
+    private void saveDocumentAndUploadFile(@Valid @ModelAttribute("documentDto") DocumentDto documentDto) throws IOException, JAXBException {
+        File file = MultipartFileUtil.multipartToFile(documentDto.getFile(), documentDto.getName());
+        String objectKey = GoogleDriveUtil.uploadFile(file);
+        documentDto.setObjectKey(objectKey);
+
+        Document document = documentDto.buildDocument();
+        document.setSpecialtySet(toSpecialtySet(documentDto.getSpecialtySet()));
+        document.setAuthorSet(toAuthorSet(documentDto.getAuthorSet()));
+        document.setDepartment(toDepartment(documentDto.getDepartmentId()));
+        documentDAO.save(document);
+
+        updateXMLFile();
+    }
+
+    private void updateXMLFile() throws JAXBException, IOException {
+        File xmlFile = new File(System.getProperty("user.home") + "\\methodical-materials.xml");
+        XMLMaker.buildXMLFile(documentDAO.listChecked(), xmlFile);
+        GoogleDriveUtil.updateXMLFile(xmlFile);
     }
 
     @RequestMapping(value = "my", method = RequestMethod.GET)
@@ -144,6 +156,7 @@ public class DocumentController {
         try {
             GoogleDriveUtil.deleteFile(documentDAO.get(denyId).getObjectKey());
             documentDAO.remove(denyId);
+            updateXMLFile();
         } catch (Exception e) {
             model.addAttribute("error", "Не удалось отклонить документ!");
             return "admin/check-document";

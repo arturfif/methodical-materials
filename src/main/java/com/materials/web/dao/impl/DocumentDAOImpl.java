@@ -10,7 +10,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -76,7 +75,8 @@ public class DocumentDAOImpl implements DocumentDAO {
     public List<Document> list() {
         Criteria criteria = currentSession().createCriteria(Document.class);
         criteria.addOrder(Order.desc("uploadDate"));
-        criteria.setProjection(Projections.distinct(Projections.property("id")));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        //criteria.setProjection(Projections.distinct(Projections.property("id")));
         return criteria.list();
     }
 
@@ -86,7 +86,7 @@ public class DocumentDAOImpl implements DocumentDAO {
     public List<Document> listChecked() {
         Criteria criteria = currentSession().createCriteria(Document.class);
         criteria.addOrder(Order.desc("uploadDate"));
-        criteria.setProjection(Projections.distinct(Projections.property("id")));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.add(Restrictions.eq("status", Status.CHECKED)).list();
     }
 
@@ -115,6 +115,7 @@ public class DocumentDAOImpl implements DocumentDAO {
     public List<Document> listByLibraryKey(int libraryKey) {
         Criteria criteria = currentSession().createCriteria(Document.class);
         criteria.addOrder(Order.desc("uploadDate"));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.add(Restrictions.eq("status", Status.CHECKED));
         return criteria.add(Restrictions.eq("libraryKey", libraryKey)).list();
     }
@@ -125,8 +126,9 @@ public class DocumentDAOImpl implements DocumentDAO {
     public List<Document> listByName(String name) {
         Criteria criteria = currentSession().createCriteria(Document.class);
         criteria.addOrder(Order.desc("uploadDate"));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.add(Restrictions.eq("status", Status.CHECKED));
-        return criteria.add(Restrictions.ilike("name", name)).list();
+        return criteria.add(Restrictions.ilike("name", name, MatchMode.START)).list();
     }
 
     @Override
@@ -135,6 +137,7 @@ public class DocumentDAOImpl implements DocumentDAO {
     public List<Document> listByDepartment(String departmentName) {
         Criteria criteria = currentSession().createCriteria(Document.class);
         criteria.addOrder(Order.desc("uploadDate"));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.add(Restrictions.eq("status", Status.CHECKED));
         Criteria departmentCriteria = currentSession().createCriteria(Department.class);
         Department department = (Department) departmentCriteria.add(Restrictions.ilike("name", departmentName, MatchMode.START)).uniqueResult();
@@ -150,6 +153,8 @@ public class DocumentDAOImpl implements DocumentDAO {
     @SuppressWarnings("unchecked")
     public List<Document> listByPublishingYear(short year) {
         Criteria criteria = currentSession().createCriteria(Document.class);
+        criteria.addOrder(Order.desc("uploadDate"));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.add(Restrictions.eq("status", Status.CHECKED));
         return criteria.add(Restrictions.eq("publishingYear", year)).list();
     }
@@ -159,7 +164,7 @@ public class DocumentDAOImpl implements DocumentDAO {
     @SuppressWarnings("unchecked")
     public List<Document> listByAuthorSurname(String surname) {
         Criteria criteria = currentSession().createCriteria(Author.class);
-        List<Author> authorList = criteria.add(Restrictions.ilike("surname", surname)).list();
+        List<Author> authorList = criteria.add(Restrictions.ilike("surname", surname, MatchMode.START)).list();
         List<Document> resultList = new ArrayList<>();
         for (Author author : authorList) {
             resultList.addAll(author.getCheckedDocumentSet());

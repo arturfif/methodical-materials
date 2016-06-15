@@ -39,7 +39,6 @@ public class User {
     private String username;
 
     @NotBlank
-    @Pattern(regexp = "^.{6,20}$")
     @Column(name = "password")
     private String password;
 

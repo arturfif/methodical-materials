@@ -13,7 +13,7 @@
 
 <body>
 
-<jsp:include page="../public/service/footer.jsp"/>
+<jsp:include page="../public/service/header.jsp"/>
 
 
 
@@ -28,9 +28,9 @@
             <th>Год издания</th>
             <th>Кафедра</th>
             <th>Загрузил(а)</th>
-            <th>Скачать</th>
-            <th>Принять</th>
-            <th>Отклонить</th>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -46,7 +46,7 @@
                 <td>${document.publishingYear}</td>
                 <td>${document.department.name}</td>
                 <td>${document.user.surname} ${document.user.name} ${document.user.patronymic}</td>
-                <td><a class="btn btn-default btn-xs" href="https://drive.google.com/open?id=${document.objectKey}">Скачать</a></td>
+                <td><a class="btn btn-default btn-xs" target="_blank" href="https://drive.google.com/open?id=${document.objectKey}">Просмотреть</a></td>
                 <td>
                     <form:form method="POST" action="accept">
                         <input type="hidden" name="acceptId" value="${document.id}"/>

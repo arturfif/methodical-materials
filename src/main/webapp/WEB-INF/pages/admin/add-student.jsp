@@ -17,7 +17,7 @@
 </head>
 <body>
 
-<jsp:include page="../public/service/footer.jsp"/>
+<jsp:include page="../public/service/header.jsp"/>
 
 
 <div class="container">

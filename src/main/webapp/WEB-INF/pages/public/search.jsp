@@ -10,15 +10,16 @@
     <jsp:include page="service/head.jsp"/>
 </head>
 <body>
-<jsp:include page="service/footer.jsp"/>
+<jsp:include page="service/header.jsp"/>
 
 <div class="container">
     <form:form method="GET" action="search">
         <div class="row">
             <div class="col-lg-7">
                 <div class="input-group">
-
-                    <input type="text" name="searchQuery" class="form-control"
+                    <input type="text" name="searchQuery"
+                           <c:if test="${not empty searchQuery}">value="${searchQuery}"</c:if>
+                           class="form-control" required title="Сначала введите поисковый запрос"
                            placeholder="Библиотечный номер; название документа, кафедры; фамилию автора; год издания">
             <span class="input-group-btn">
               <button class="btn btn-default" type="submit">Поиск</button>
@@ -59,7 +60,7 @@
                 </td>
                 <td>${document.publishingYear}</td>
                 <td>${document.department.name}</td>
-                <td><a class="btn btn-default btn-xs" href="https://drive.google.com/open?id=${document.objectKey}">Скачать</a>
+                <td><a class="btn btn-default btn-xs" target="_blank" href="https://drive.google.com/open?id=${document.objectKey}">Просмотреть</a>
                 </td>
                 <sec:authorize access="hasRole('ADMIN')">
                     <td>${document.user.surname} ${document.user.name} ${document.user.patronymic}</td>

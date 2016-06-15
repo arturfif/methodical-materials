@@ -8,7 +8,7 @@
 	<jsp:include page="head.jsp"/>
 </head>
 <body>
-<jsp:include page="footer.jsp"/>
+<jsp:include page="header.jsp"/>
 
 <div class="container">
 	<sec:authorize access="isAnonymous()">

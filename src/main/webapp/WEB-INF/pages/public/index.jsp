@@ -8,7 +8,7 @@
     <jsp:include page="service/head.jsp"/>
 </head>
 <body>
-<jsp:include page="service/footer.jsp"/>
+<jsp:include page="service/header.jsp"/>
 
 <div class="container">
     <sec:authorize access="isAnonymous()">
@@ -17,6 +17,9 @@
         <a href="<c:url value="/login"/>">авторизироваться</a>.
     </div>
     </sec:authorize>
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger">${error}</div>
+    </c:if>
     <sec:authorize access="isAuthenticated()">
         <div class="alert alert-info">Вы авторизированы. Ваш логин: ${pageContext.request.userPrincipal.name}</div>
     </sec:authorize>

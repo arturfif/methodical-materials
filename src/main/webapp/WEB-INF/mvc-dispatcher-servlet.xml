@@ -36,4 +36,10 @@
 		<property name="maxUploadSize" value="1000000"/>
 	</bean>
 
+	<!--<bean id="strongEncryptor"
+		  class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<property name="algorithm" value="PBEWithMD5AndTripleDES"/>
+		<property name="password" value="jasypt"/>
+	</bean>-->
+
 </beans>

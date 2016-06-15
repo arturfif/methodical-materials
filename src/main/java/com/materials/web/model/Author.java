@@ -4,14 +4,13 @@ import com.materials.web.model.enumeration.Status;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "author")
-public class Author implements Serializable {
+public class Author {
 
     @Id
     @GeneratedValue

@@ -116,11 +116,15 @@ public class GoogleDriveUtil {
 
         String objectId = service.files().create(googleFile, content).execute().getId();
 
+        permitToReadFileForAnyone(service, objectId);
+
+        return objectId;
+    }
+
+    private static void permitToReadFileForAnyone(Drive service, String objectId) throws IOException {
         Permission permission = new Permission();
         permission.setRole("reader").setType("anyone");
         service.permissions().create(objectId, permission).execute();
-
-        return objectId;
     }
 
     public static void deleteFile(String objectKey) throws IOException {
@@ -138,20 +142,6 @@ public class GoogleDriveUtil {
                 .setFields("id")
                 .execute();
         System.out.println("Folder ID: " + file.getId());
-    }
-
-    public static void createFileInZip() throws IOException {
-        Drive service = getDriveService();
-        String folderId = "0B2jorNLu7tz-RXhzekZ1WlVFdHM";
-        File fileMetadata = new File();
-        fileMetadata.setName("photo.jpg");
-        fileMetadata.setParents(Collections.singletonList(folderId));
-        java.io.File filePath = new java.io.File("C:\\Users\\arturk\\registration.jpg");
-        FileContent mediaContent = new FileContent("image/jpeg", filePath);
-        File file = service.files().create(fileMetadata, mediaContent)
-                .setFields("id, parents")
-                .execute();
-        System.out.println("File ID: " + file.getId());
     }
 
 
@@ -173,15 +163,33 @@ public class GoogleDriveUtil {
         service.files().delete(removeId).execute();
     }
 
-    public static void main(String[] args) {
-        try {
-            String zipFileObjectKey = getZipFileObjectKey();
-            System.out.println(zipFileObjectKey);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static String getXMLFileObjectKey() throws IOException {
+        Drive service = getDriveService();
+        List<File> fileList = service.files().list()
+                .setQ("mimeType='text/xml'")
+                .setSpaces("drive")
+                .setOrderBy("createdTime")
+                .setFields("nextPageToken, files(id)")
+                .setPageToken(null)
+                .execute().getFiles();
+        return  fileList.get(0).getId();
     }
 
+    public static void updateXMLFile(java.io.File file) throws IOException {
+        Drive service = getDriveService();
+        String xmlFileObjectKey = getXMLFileObjectKey();
+        File googleFile = toGoogleFile(file);
+
+        FileContent content = new FileContent(Files.probeContentType(file.toPath()), file);
+        service.files().update(xmlFileObjectKey, googleFile, content).execute();
+        permitToReadFileForAnyone(service, xmlFileObjectKey);
+    }
+
+    private static File toGoogleFile(java.io.File file) throws IOException {
+        File googleFile = new File();
+        googleFile.setName(file.getName());
+        //googleFile.setParents(Collections.singletonList(GOOGLE_MATERIALS_FOLDER));
+        return googleFile;
+    }
 
 }

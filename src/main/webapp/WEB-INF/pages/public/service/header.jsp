@@ -53,7 +53,7 @@
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#">Автономную версию</a></li>
-                        <li><a href="https://drive.google.com/open?id=0B2jorNLu7tz-N1dMOHJWOTNUc00">Базу материалов</a></li>
+                        <li><a href="<c:url value="/download"/>" target="_blank">Базу материалов</a></li>
                     </ul>
                 </li>
                 </sec:authorize>

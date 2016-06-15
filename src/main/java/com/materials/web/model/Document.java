@@ -5,9 +5,9 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -15,7 +15,6 @@ import java.util.Set;
  */
 
 @Entity
-@XmlRootElement
 @Table(name = "document")
 public class Document {
 
@@ -63,12 +62,13 @@ public class Document {
     @OrderBy("surname")
     private Set<Author> authorSet = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "document_specialty", joinColumns = {
             @JoinColumn(name = "document_id", nullable = false)},
             inverseJoinColumns = {
                     @JoinColumn(name = "specialty_id",
                             nullable = false)})
+    @OrderBy("name")
     private Set<Specialty> specialtySet = new HashSet<>();
 
     public Document() {
@@ -161,5 +161,14 @@ public class Document {
 
     public void setSpecialtySet(Set<Specialty> specialtySet) {
         this.specialtySet = specialtySet;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        Document d = (Document) obj;
+        return Objects.equals(this.id, d.id);
     }
 }

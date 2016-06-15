@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Controller
@@ -39,6 +41,21 @@ public class UserController {
         specialtyList = specialtyDAO.list();
     }
 
+    private static String encodeMD5(String string) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(string.getBytes());
+            byte[] digest = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b & 0xff));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException ignored) {}
+
+        return null;
+    }
+
     @RequestMapping(value = "account/admin/add", method = RequestMethod.GET)
     public String addAdmin(Model model) {
         model.addAttribute("userDto", new UserDto());
@@ -49,7 +66,7 @@ public class UserController {
     public String saveAdmin(@Valid @ModelAttribute("userDto") UserDto userDto, BindingResult bindingResult, Model model) {
 
         boolean fail = false;
-        if(userDAO.get(userDto.getUsername()) != null) {
+        if (userDAO.get(userDto.getUsername()) != null) {
             fail = true;
             model.addAttribute("usernameError", "Этот логин занят");
         }
@@ -60,14 +77,15 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             fail = true;
         }
-        if(fail) {
+        if (fail) {
             return "admin/add-admin";
         }
 
         Role role = roleDAO.get(userDto.getRoleId());
+
         User user = new User(userDto);
         user.setRole(role);
-
+        user.setPassword(encodeMD5(userDto.getPassword()));
         userDAO.save(user);
         model.addAttribute("success", "Пользователь " + userDto.getUsername() + " успешно зарегистрирован!");
         return "admin/add-admin";
@@ -89,7 +107,7 @@ public class UserController {
 
         model.addAttribute("specialtyList", specialtyList);
         boolean fail = false;
-        if(userDAO.get(studentDto.getUsername()) != null) {
+        if (userDAO.get(studentDto.getUsername()) != null) {
             fail = true;
             model.addAttribute("usernameError", "Этот логин занят");
         }
@@ -100,13 +118,14 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             fail = true;
         }
-        if(fail) {
+        if (fail) {
             return "admin/add-student";
         }
 
         Role role = roleDAO.get(3);
         User user = new User(studentDto);
         user.setRole(role);
+        user.setPassword(encodeMD5(studentDto.getPassword()));
         userDAO.save(user);
         Student student = new Student();
         student.setStudentSpecialty(specialtyDAO.get(studentDto.getSpecialtyId()));

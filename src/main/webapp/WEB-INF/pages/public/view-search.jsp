@@ -8,7 +8,7 @@
     <jsp:include page="service/head.jsp"/>
 </head>
 <body>
-<jsp:include page="service/footer.jsp"/>
+<jsp:include page="service/header.jsp"/>
 
 <div class="container">
     <form:form method="GET" action="search">
@@ -16,7 +16,9 @@
         <div class="col-lg-7">
             <div class="input-group">
 
-                <input type="text" name="searchQuery" class="form-control" placeholder="Библиотечный номер; название документа, кафедры; фамилию автора; год издания">
+                <input type="text" name="searchQuery" class="form-control"
+                       required title="Сначала введите поисковый запрос"
+                       placeholder="Библиотечный номер; название документа, кафедры; фамилию автора; год издания">
             <span class="input-group-btn">
               <button class="btn btn-default" type="submit">Поиск</button>
             </span>
