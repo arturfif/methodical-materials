@@ -1,10 +1,12 @@
 package com.materials.web.model;
 
+import com.materials.web.model.enumeration.Status;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "specialty")
@@ -59,6 +61,12 @@ public class Specialty {
 
     public Set<Document> getDocumentSet() {
         return documentSet;
+    }
+
+    public List<Document> getCheckedDocumentList() {
+        List<Document> documentList = this.documentSet.stream().filter(document -> document.getStatus() == Status.CHECKED).collect(Collectors.toList());
+        Collections.sort(documentList, (o1, o2) -> o2.getUploadDate().compareTo(o1.getUploadDate()));
+        return documentList;
     }
 
     public void setDocumentSet(Set<Document> documentSet) {

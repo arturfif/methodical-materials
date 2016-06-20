@@ -88,15 +88,14 @@ public class DocumentController {
         }
         catch (Exception e) {
 
-            model.addAttribute("error", "Не удалось загрузить файл!");
-            return "admin/add-file";
+            redirectAttributes.addFlashAttribute("error", "Не удалось загрузить файл!");
+            return "redirect:add";
         }
 
 
-
         if(fail) {
-            model.addAttribute("error", "При загрузке файла произошла ошибка!");
-            return "admin/add-file";
+            redirectAttributes.addFlashAttribute("error", "При загрузке файла произошла ошибка!");
+            return "redirect:add";
         }
 
         redirectAttributes.addFlashAttribute("success", "Документ успешно добавлен в систему!");
@@ -139,31 +138,31 @@ public class DocumentController {
     }
 
     @RequestMapping(value = "accept", method = RequestMethod.POST)
-    public String acceptDocument(Model model,
-                                @RequestParam(value = "acceptId") long acceptId) {
+    public String acceptDocument(@RequestParam(value = "acceptId") long acceptId,
+                                 RedirectAttributes redirectAttributes) {
         try {
             documentDAO.setCheckedStatus(acceptId);
         } catch (Exception e) {
-            model.addAttribute("error", "Не удалось принять документ!");
+            redirectAttributes.addFlashAttribute("error", "Не удалось принять документ!");
         }
-        model.addAttribute("success", "Документ успешно принят и доступен для поиска!");
-        return "admin/check-document";
+        redirectAttributes.addFlashAttribute("success", "Документ успешно принят и доступен для поиска!");
+        return "redirect:check";
     }
 
     @RequestMapping(value = "deny", method = RequestMethod.POST)
-    public String denyDocument(Model model,
-                                @RequestParam(value = "denyId") long denyId) {
+    public String denyDocument(@RequestParam(value = "denyId") long denyId,
+                               RedirectAttributes redirectAttributes) {
         try {
             GoogleDriveUtil.deleteFile(documentDAO.get(denyId).getObjectKey());
             documentDAO.remove(denyId);
             updateXMLFile();
         } catch (Exception e) {
-            model.addAttribute("error", "Не удалось отклонить документ!");
-            return "admin/check-document";
+            redirectAttributes.addFlashAttribute("error", "Не удалось отклонить документ!");
+            return "redirect:check";
         }
-        model.addAttribute("success", "Документ успешно отклонен!");
+        redirectAttributes.addFlashAttribute("success", "Документ успешно отклонен!");
 
-        return "admin/check-document";
+        return "redirect:check";
     }
 
     private Set<Specialty> toSpecialtySet(Set<Long> longSet) {

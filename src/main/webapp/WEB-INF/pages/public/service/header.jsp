@@ -42,8 +42,8 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Создать аккаунт
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="<c:url value="/admin/account/admin/add"/>">Для администратора</a></li>
-                        <li><a href="<c:url value="/admin/account/student/add"/>">Для студента</a></li>
+                        <li><a href="<c:url value="/account/admin/add"/>">Для администратора</a></li>
+                        <li><a href="<c:url value="/account/student/add"/>">Для студента</a></li>
                     </ul>
                 </li>
                 </sec:authorize>

@@ -110,4 +110,12 @@ public class GoogleScriptUtil {
         scriptService.scripts().run(SCRIPT_ID, new ExecutionRequest().setFunction(FUNCTION_NAME)).execute();
     }
 
+    public static void main(String[] args) {
+        try {
+            createZipFromMaterialsFolder();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

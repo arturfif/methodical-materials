@@ -12,4 +12,5 @@ public interface DepartmentDAO {
     List<Department> list();
 
 
+
 }

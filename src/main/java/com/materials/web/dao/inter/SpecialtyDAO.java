@@ -14,4 +14,6 @@ public interface SpecialtyDAO {
 
     List<Specialty> list();
 
+    List<Specialty> listOrderByFaculty();
+
 }

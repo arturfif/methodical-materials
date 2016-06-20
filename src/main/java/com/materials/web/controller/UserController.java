@@ -18,13 +18,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "admin/")
+@RequestMapping(value = "account/")
 public class UserController {
 
     private UserDAO userDAO;
     private RoleDAO roleDAO;
     private SpecialtyDAO specialtyDAO;
-    private FacultyDAO facultyDAO;
     private StudentDAO studentDAO;
     private List<Faculty> facultyList;
     private List<Specialty> specialtyList;
@@ -35,10 +34,9 @@ public class UserController {
         this.userDAO = userDAO;
         this.roleDAO = roleDAO;
         this.specialtyDAO = specialtyDAO;
-        this.facultyDAO = facultyDAO;
         this.studentDAO = studentDAO;
         facultyList = facultyDAO.list();
-        specialtyList = specialtyDAO.list();
+        specialtyList = specialtyDAO.listOrderByFaculty();
     }
 
     private static String encodeMD5(String string) {
@@ -56,13 +54,13 @@ public class UserController {
         return null;
     }
 
-    @RequestMapping(value = "account/admin/add", method = RequestMethod.GET)
+    @RequestMapping(value = "admin/add", method = RequestMethod.GET)
     public String addAdmin(Model model) {
         model.addAttribute("userDto", new UserDto());
         return "admin/add-admin";
     }
 
-    @RequestMapping(value = "account/admin/add", method = RequestMethod.POST)
+    @RequestMapping(value = "admin/add", method = RequestMethod.POST)
     public String saveAdmin(@Valid @ModelAttribute("userDto") UserDto userDto, BindingResult bindingResult, Model model) {
 
         boolean fail = false;
@@ -91,7 +89,7 @@ public class UserController {
         return "admin/add-admin";
     }
 
-    @RequestMapping(value = "account/student/add", method = RequestMethod.GET)
+    @RequestMapping(value = "student/add", method = RequestMethod.GET)
     public String addStudent(Model model) {
 
 
@@ -102,7 +100,7 @@ public class UserController {
         return "admin/add-student";
     }
 
-    @RequestMapping(value = "account/student/add", method = RequestMethod.POST)
+    @RequestMapping(value = "student/add", method = RequestMethod.POST)
     public String saveStudent(@Valid @ModelAttribute("studentDto") StudentDto studentDto, BindingResult bindingResult, Model model) {
 
         model.addAttribute("specialtyList", specialtyList);
@@ -134,6 +132,8 @@ public class UserController {
 
         model.addAttribute("success", "Пользователь " + studentDto.getUsername() + " успешно зарегистрирован!");
         model.addAttribute("specialtyList", specialtyList);
+        model.addAttribute("facultyList", facultyList);
+        model.addAttribute("studentDto", new StudentDto());
         return "admin/add-student";
     }
 

@@ -32,7 +32,7 @@
         <div class="alert alert-danger">${error}</div>
     </c:if>
     <form:form cssClass="form-horizontal form-signin" method="POST" modelAttribute="documentDto" action="add" enctype="multipart/form-data">
-        <h3 style="float: none; margin: 0 auto;">Новый документ</h3>
+        <div class="form-group"><h3 style="float: none; margin: 0 auto;">Новый документ</h3></div>
 
         <div class="form-group">
             <form:label path="libraryKey">Библиотечный номер:</form:label>

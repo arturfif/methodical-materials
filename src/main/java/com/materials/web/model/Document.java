@@ -1,10 +1,8 @@
 package com.materials.web.model;
 
 import com.materials.web.model.enumeration.Status;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Objects;
@@ -27,7 +25,6 @@ public class Document {
     private Integer libraryKey;
 
     @Column(name = "name")
-    @NotBlank
     private String name;
 
     @ManyToOne
@@ -41,11 +38,9 @@ public class Document {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @NotNull
     @Column(name = "upload_date")
     private Timestamp uploadDate;
 
-    @NotNull
     @Column(name = "object_key")
     private String objectKey;
 

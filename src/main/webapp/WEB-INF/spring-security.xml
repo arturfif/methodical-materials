@@ -8,8 +8,13 @@
 
     <!-- enable use-expressions -->
     <http auto-config="true" use-expressions="true">
-        <intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>
-        <intercept-url pattern="/admin*" access="hasRole('ADMIN')"/>
+
+        <intercept-url pattern="/search**" access="hasAnyRole('STUDENT', 'TEACHER', 'ADMIN')"/>
+        <intercept-url pattern="/download" access="hasAnyRole('STUDENT', 'TEACHER', 'ADMIN')"/>
+        <intercept-url pattern="/document**" access="hasAnyRole('TEACHER', 'ADMIN')"/>
+        <intercept-url pattern="/document/check" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/account/**" access="hasRole('ADMIN')"/>
+
 
         <!-- access denied page -->
         <access-denied-handler error-page="/403"/>

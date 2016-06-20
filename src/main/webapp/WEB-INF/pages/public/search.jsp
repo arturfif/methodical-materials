@@ -41,10 +41,10 @@
             <th>Авторы</th>
             <th>Год издания</th>
             <th>Кафедра</th>
-            <th>Ссылка</th>
+            <th></th>
             <sec:authorize access="hasRole('ADMIN')">
                 <th>Загрузил(а)</th>
-                <th>Удалить</th>
+                <th></th>
             </sec:authorize>
         </tr>
         </thead>

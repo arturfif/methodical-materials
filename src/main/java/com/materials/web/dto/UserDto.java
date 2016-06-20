@@ -8,11 +8,11 @@ import javax.validation.constraints.Pattern;
 public class UserDto {
 
     @NotBlank
-    @Pattern(regexp = "^[а-яА-Я- ]{0,50}$")
+    @Pattern(regexp = "^[а-яА-Я- ]{1,50}$")
     private String surname;
 
     @NotBlank
-    @Pattern(regexp = "^[а-яА-Я- ]{0,50}$")
+    @Pattern(regexp = "^[а-яА-Я- ]{1,50}$")
     private String name;
 
     @Pattern(regexp = "^[а-яА-Я- ]{0,50}$")

@@ -46,6 +46,9 @@ public class XMLMaker {
         Element name = new Element("name");
         name.setText(document.getName());
 
+        Element filePath = new Element("file_path");
+        filePath.setText(document.getName());
+
         Element department = new Element("department");
         department.setText(document.getDepartment().getName());
 
@@ -61,6 +64,7 @@ public class XMLMaker {
 
         documentElement.addContent(libraryKey);
         documentElement.addContent(name);
+        documentElement.addContent(filePath);
         documentElement.addContent(department);
         documentElement.addContent(publishingYear);
         documentElement.addContent(uploadDate);

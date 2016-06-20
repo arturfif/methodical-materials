@@ -21,9 +21,15 @@
 
 
 <div class="container">
-    <h3>${success}</h3>
+
+    <c:if test="${not empty success}">
+        <div class="alert alert-success">${success}</div>
+    </c:if>
+
     <form:form method="POST" cssClass="form-horizontal form-signin" modelAttribute="studentDto" action="add">
-        <h3 style="float: none; margin: 0 auto;">Создать аккаунт для студента</h3>
+
+        <div class="form-group"><h3 style="float: none; margin: 0 auto;">Создать аккаунт для студента</h3></div>
+
         <div class="form-group">
             <form:label path="surname">Фамилия:</form:label>
             <form:input cssClass="form-control" path="surname" size="50"/>

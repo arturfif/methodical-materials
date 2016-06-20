@@ -27,7 +27,7 @@ public class MainController {
 
 		ModelAndView model = new ModelAndView();
 		if (error != null) {
-			model.addObject("error", "Неверное имя пользователя и пароль!");
+			model.addObject("error", "Неверное имя пользователя или пароль!");
 		}
 
 		if (logout != null) {

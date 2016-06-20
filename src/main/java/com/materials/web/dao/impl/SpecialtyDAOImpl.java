@@ -54,4 +54,13 @@ public class SpecialtyDAOImpl implements SpecialtyDAO {
         criteria.addOrder(Order.asc("name"));
         return criteria.list();
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Specialty> listOrderByFaculty() {
+        Criteria criteria = currentSession().createCriteria(Specialty.class);
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+        criteria.addOrder(Order.asc("faculty"));
+        return criteria.list();
+    }
 }

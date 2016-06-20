@@ -42,8 +42,7 @@ public class SearchController {
             User user = userDAO.get(username);
             if (user.getRole().getRoleEnum() == RoleEnum.STUDENT) {
                 Long specialtyId = user.getStudent().getStudentSpecialty().getId();
-                Set<Document> documentSet = specialtyDAO.get(specialtyId).getDocumentSet();
-                List<Document> documentList = new ArrayList<>(documentSet);
+                List<Document> documentList = specialtyDAO.get(specialtyId).getCheckedDocumentList();
                 model.addAttribute("documentList", documentList);
                 model.addAttribute("searchTitle", "Результаты поиска по Вашей специальности:");
                 return "public/search";
@@ -90,10 +89,7 @@ public class SearchController {
                 frequencyMap.put(document, frequency);
             }
         }
-
         return MapUtil.entriesSortedByValues(frequencyMap);
-
     }
-
 
 }

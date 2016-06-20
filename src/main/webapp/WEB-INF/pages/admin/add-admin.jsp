@@ -9,7 +9,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Аккаунт для администратора</title>
     <jsp:include page="../public/service/head.jsp"/>
-    <script src="<c:url value="/js/custom-validity.js"/>"></script>
     <style>
         .form-signin {
             max-width: 420px;
@@ -23,55 +22,59 @@
 <jsp:include page="../public/service/header.jsp"/>
 
 <div class="container">
-    <h3>${success}</h3>
+
+    <c:if test="${not empty success}">
+        <div class="alert alert-success">${success}</div>
+    </c:if>
+
     <form:form method="POST" id="admin-form" cssClass="form-horizontal form-signin" modelAttribute="userDto"
                action="add"> <!-- Связать форму -->
-        <h3 style="float: none; margin: 0 auto;">Создать аккаунт для администратора</h3>
+        <div class="form-group"><h3 style="float: none; margin: 0 auto;">Аккаунт для администратора</h3></div>
 
         <div class="form-group">
             <form:label path="surname">Фамилия:</form:label>
-            <form:input required="required" name="surname" cssClass="form-control" path="surname" size="50"/>
-            <div id="surnameError" class="alert alert-danger hidden-field"></div>
+            <form:input required="required" pattern="^[а-яА-Я- ]{1,50}$" cssClass="form-control" path="surname"
+                        size="50"/>
         </div>
         <div class="form-group">
             <form:label path="name">Имя:</form:label>
-            <form:input required="required" name="name" cssClass="form-control" path="name" size="50"/>
-            <div id="nameError" class="bg-danger"></div>
-            <form:errors path="name" cssClass="error"/>
+            <form:input required="required" pattern="^[а-яА-Я- ]{1,50}$" cssClass="form-control" path="name" size="50"/>
         </div>
         <div class="form-group">
             <form:label path="patronymic">Отчество:</form:label>
-            <form:input cssClass="form-control" path="patronymic" size="50"/>
+            <form:input cssClass="form-control" pattern="^[а-яА-Я- ]{0,50}$" path="patronymic" size="50"/>
         </div>
         <div class="form-group">
             <form:label path="username">Логин:</form:label>
-            <form:input required="required" path="username" cssClass="form-control" name="username" size="50"/>
-            <form:errors path="username" cssClass="error"/>${usernameError}
+            <form:input required="required" pattern="^[a-zA-Z0-9-]{3,50}$"
+                        path="username" cssClass="form-control" size="50"/>
+                ${usernameError}
         </div>
         <div class="form-group">
             <form:label path="password">Пароль:</form:label>
-            <form:password required="required" cssClass="form-control" name="password" path="password"
-                           showPassword="true" size="50"/>
-            <form:errors path="password"/>${passwordError}
+            <form:password required="required" cssClass="form-control" path="password"
+                           pattern=".{6,20}$"
+                           showPassword="false" size="20"/>
+                ${passwordError}
         </div>
         <div class="form-group">
             <form:label path="confirmPassword">Повторите пароль:</form:label>
-            <form:password required="required" cssClass="form-control" name="confirmPassword" path="confirmPassword"
-                           size="50"/>
-            <form:errors path="confirmPassword"/>
+            <form:password required="required" pattern=".{6,20}$" cssClass="form-control" path="confirmPassword"
+                           size="20"/>
         </div>
         <form:label path="roleId">Роль:</form:label>
-        <div class="radio">
-            <label><form:radiobutton path="roleId" checked="checked" value="2"/>
-                Администратор (загруженные документы требуют подтверждения)
-            </label>
+        <div class="form-group">
+            <div class="radio">
+                <label><form:radiobutton path="roleId" checked="checked" value="2"/>
+                    Преподаватель (загруженные документы требуют подтверждения)
+                </label>
+            </div>
+            <div class="radio">
+                <label><form:radiobutton path="roleId" value="1"/>
+                    Администратор (полный доступ)
+                </label>
+            </div>
         </div>
-        <div class="radio">
-            <label><form:radiobutton path="roleId" value="1"/>
-                Супер администратор (полный доступ)
-            </label>
-        </div>
-
         <div class="form-group">
             <input type="submit" class="btn btn-primary form-control" value="Создать аккаунт"/>
         </div>

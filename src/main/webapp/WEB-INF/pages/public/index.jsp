@@ -23,6 +23,9 @@
     <sec:authorize access="isAuthenticated()">
         <div class="alert alert-info">Вы авторизированы. Ваш логин: ${pageContext.request.userPrincipal.name}</div>
     </sec:authorize>
+    <div class="alert alert-info">
+        Система "Методические материалы" — сервис, предоставляющий доступ к учебным материалам университета ДНУЖТ.
+    </div>
 </div>
 </body>
 </html>

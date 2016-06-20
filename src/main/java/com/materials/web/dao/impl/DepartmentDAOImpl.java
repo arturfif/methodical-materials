@@ -55,6 +55,7 @@ public class DepartmentDAOImpl implements DepartmentDAO {
         Criteria criteria = currentSession().createCriteria(Department.class);
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         criteria.addOrder(Order.asc("name"));
-        return currentSession().createCriteria(Department.class).list();
+        return criteria.list();
     }
+
 }
